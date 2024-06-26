@@ -1,6 +1,7 @@
 import os
 import fitz
 import subprocess
+import psutil
 
 from time import time, sleep
 from selenium.webdriver.support.ui import WebDriverWait
@@ -32,6 +33,11 @@ def kill_chrome_drivers():
         subprocess.check_call("pkill chrome", shell=True)
     except subprocess.CalledProcessError:
         pass
+
+    subprocess.run(['chmod', '+x', 'chromedriver'])
+    from pyvirtualdisplay import Display
+    display = Display(visible=False, size=(800, 600))
+    display.start()
 
 
 def epub2pdf(epub_path):

@@ -1,13 +1,17 @@
 import shutil
 import uuid
 import traceback
-import undetected_chromedriver as uc
+import unittest.mock as mock
+
+with mock.patch("multiprocessing.Lock", return_value=object()):
+    import undetected_chromedriver as uc
 
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+from seleniumbase import Driver
 from utils import kill_chrome_drivers, wait_for_file_download, safe_click, safe_send_keys
 
 

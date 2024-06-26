@@ -3,41 +3,44 @@ import shutil
 import uuid
 import traceback
 import undetected_chromedriver as uc
+import sys
 
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
-from selenium import webdriver
 
 from time import sleep, time
 from utils import kill_chrome_drivers
 
 
 def translate_pdf(pdf: bytearray):
-    with NamedTemporaryFile(suffix=".docx", delete=False) as tmp_file, TemporaryDirectory() as tmp_dir:
+    with NamedTemporaryFile(suffix=".docx") as tmp_file, TemporaryDirectory() as tmp_dir:
         tmp_file.write(pdf)
 
-        kill_chrome_drivers()
+        error = 0
 
-        options = uc.ChromeOptions()
-        chrome_path = '/usr/bin/google-chrome-stable'
-        options.binary_location = chrome_path
-        options.add_argument("--headless")
-        options.add_argument(
-            'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+        options: uc.ChromeOptions = uc.ChromeOptions()
+        # options.add_argument("--headless=new")
+        # options.add_argument("--disable-gpu")
+        # options.add_argument("window-size=1366x768")
+        # options.add_argument("--disable-dev-shm-usage")
+        # options.add_argument("--hide-scrollbars")
+        # options.add_argument("--single-process")
+        # options.add_argument("--ignore-certificate-errors")
+        options.add_argument("--start-maximized")
+        options.add_argument(f"--homedir={tmp_dir}")
+        options.add_argument(f"--disk-cache-dir={tmp_dir}/cache-dir")
+        options.add_argument(f"--data-path={tmp_dir}/data-path")
+        options.add_experimental_option(
+            "prefs", {"download.default_directory": tmp_dir}
         )
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_experimental_option("prefs", {
-            "download.default_directory": tmp_dir,
-            "download.prompt_for_download": False,
-            "download.directory_upgrade": True,
-            "safebrowsing.enabled": True
-        })
+        print("Opening driver")
 
-        driver = uc.Chrome(options=options)
+        if sys.platform.startswith('linux'):
+            driver: uc.Chrome = uc.Chrome(options=options, enable_cdp_events=True)
+
         try:
             print("Waiting for site load")
             driver.get("https://translate.google.com/?sl=auto&tl=en&op=docs")
