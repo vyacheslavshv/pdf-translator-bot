@@ -76,11 +76,11 @@ def wait_for_file_download(directory, timeout=300):
             raise TimeoutError("File download did not complete in time")
 
 
-def safe_click(driver, locator):
+def safe_click(driver, locator, timeout=30):
     attempts = 0
     while attempts < 3:
         try:
-            element = WebDriverWait(driver, 30).until(
+            element = WebDriverWait(driver, timeout).until(
                 EC.element_to_be_clickable(locator))
             driver.execute_script("arguments[0].click();", element)
             return
@@ -94,7 +94,7 @@ def safe_send_keys(driver, locator, keys):
     attempts = 0
     while attempts < 3:
         try:
-            element = WebDriverWait(driver, 30).until(
+            element = WebDriverWait(driver, 60).until(
                 EC.presence_of_element_located(locator))
             element.send_keys(keys)
             return

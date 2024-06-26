@@ -47,11 +47,11 @@ def convert_to_docx(file_path):
                 EC.presence_of_element_located((By.ID, "lang")))
             Select(select_element).select_by_visible_text('Arabic')
 
-            print("Waiting for upload area")
+            print("Waiting for upload button")
             safe_click(driver, (By.ID, "upload"))
 
             print("Waiting for download button")
-            safe_click(driver, (By.XPATH, '//*[@id="result"]/a'))
+            safe_click(driver, (By.XPATH, '//*[@id="result"]/a'), 180)
 
             downloaded_file = wait_for_file_download(tmp_dir)
             final_file_name = str(uuid.uuid4()) + ".docx"

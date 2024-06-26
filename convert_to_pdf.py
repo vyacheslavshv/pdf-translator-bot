@@ -38,11 +38,11 @@ def convert_to_pdf(file_path):
             print("Waiting for file upload area")
             safe_send_keys(driver, (By.ID, "file"), tmp_file_path)
 
-            print("Waiting for upload area")
+            print("Waiting for upload button")
             safe_click(driver, (By.ID, "upload"))
 
             print("Waiting for download button")
-            safe_click(driver, (By.XPATH, '//*[@id="result"]/a'))
+            safe_click(driver, (By.XPATH, '//*[@id="result"]/a'), 180)
 
             downloaded_file = wait_for_file_download(tmp_dir)
             final_file_name = str(uuid.uuid4()) + ".pdf"
