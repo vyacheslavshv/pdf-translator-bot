@@ -36,7 +36,7 @@ def translate_pdf(pdf: bytearray):
         driver = uc.Chrome(options=options)
         try:
             print("Waiting for site load")
-            driver.get("https://translate.google.com/?sl=auto&tl=en&op=docs")
+            driver.get("https://translate.google.com/?sl=ar&tl=en&op=docs")
 
             # print("Waiting for 'Accept all cookies' to appear")
             # WebDriverWait(driver, 60).until(
