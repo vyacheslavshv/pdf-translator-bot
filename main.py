@@ -103,7 +103,7 @@ async def worker():
     while True:
         event = await task_queue.get()
         try:
-            await process_file_core(event)
+            await process_file(event)
         except Exception:
             traceback.print_exc()
         finally:
