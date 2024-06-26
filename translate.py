@@ -38,10 +38,13 @@ def translate_pdf(pdf: bytearray):
             print("Waiting for site load")
             driver.get("https://translate.google.com/?sl=auto&tl=en&op=docs")
 
-            # print("Waiting for 'Accept all cookies' to appear")
-            # WebDriverWait(driver, 60).until(
-            #     EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Accept all')]"))
-            # ).click()
+            try:
+                print("Waiting for 'Accept all cookies' to appear")
+                WebDriverWait(driver, 15).until(
+                    EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Accept all')]"))
+                ).click()
+            except Exception:
+                pass
 
             print("Waiting for file upload area")
             WebDriverWait(driver, 60).until(

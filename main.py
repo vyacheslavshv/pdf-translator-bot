@@ -48,16 +48,15 @@ async def process_file_core(event, file_paths):
     if not file_path.endswith(".pdf"):
         await event.respond("We are only accepting PDF files at this time.")
         return
+
+    if file_path.endswith(".epub") or file_path.endswith(".mobi"):
         await event.respond("Converting your document...")
         try:
             if file_path.endswith(".epub"):
-                new_path = epub2pdf(file_path)
-                file_paths.append(new_path)
-                file_path = new_path
+                file_path = epub2pdf(file_path)
             elif file_path.endswith(".mobi"):
-                new_path = mobi2pdf(file_path)
-                file_paths.append(new_path)
-                file_path = new_path
+                file_path = mobi2pdf(file_path)
+            file_paths.append(file_path)
         except Exception:
             await event.respond("Converting your document failed. Try a PDF file.")
             traceback.print_exc()
