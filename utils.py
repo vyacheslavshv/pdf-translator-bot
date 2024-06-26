@@ -37,9 +37,10 @@ def kill_chrome_drivers():
 def epub2pdf(epub_path):
     output_pdf_path = epub_path.replace('.epub', '.pdf')
     command = [
-        'ebook-convert', epub_path, output_pdf_path, '--no-sandbox',
+        'ebook-convert', epub_path, output_pdf_path,
         '--pdf-page-numbers', '--paper-size', 'a4',
-        '--pdf-default-font-size', '16', '--pdf-mono-font-size', '12'
+        '--pdf-default-font-size', '16', '--pdf-mono-font-size', '12',
+        '--no-sandbox'
     ]
     subprocess.run(command, check=True)
     return output_pdf_path
@@ -50,7 +51,8 @@ def mobi2pdf(mobi_path):
     command = [
         'ebook-convert', mobi_path, output_pdf_path, '--no-sandbox',
         '--pdf-page-numbers', '--paper-size', 'a4',
-        '--pdf-default-font-size', '16', '--pdf-mono-font-size', '12'
+        '--pdf-default-font-size', '16', '--pdf-mono-font-size', '12',
+        '--no-sandbox'
     ]
     subprocess.run(command, check=True)
     return output_pdf_path
