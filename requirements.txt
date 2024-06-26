@@ -1,3 +1,4 @@
 telethon==1.36.0
 undetected_chromedriver==3.5.5
 PyMuPDF==1.24.5
+setuptools==70.1.0

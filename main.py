@@ -45,6 +45,8 @@ async def process_file_core(event, file_paths):
     original_file_name = os.path.splitext(file_path)[0]
 
     if not file_path.endswith(".pdf"):
+        await event.respond("We are only accepting PDF files at this time.")
+        return
         await event.respond("Converting your document...")
         try:
             if file_path.endswith(".epub"):
