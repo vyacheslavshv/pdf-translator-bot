@@ -21,31 +21,27 @@ def translate_pdf(pdf: bytearray):
 
         kill_chrome_drivers()
 
-        # options = uc.ChromeOptions()
-        # chrome_path = '/usr/bin/google-chrome-stable'
-        # options.binary_location = chrome_path
-        # options.add_argument("--headless")
-        # options.add_argument(
-        #     'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
-        # )
-        # options.add_argument("--no-sandbox")
-        # options.add_argument("--disable-dev-shm-usage")
-        # options.add_experimental_option("prefs", {
-        #     "download.default_directory": tmp_dir,
-        #     "download.prompt_for_download": False,
-        #     "download.directory_upgrade": True,
-        #     "safebrowsing.enabled": True
-        # })
-
-        options = webdriver.ChromeOptions()
+        options = uc.ChromeOptions()
+        chrome_path = '/usr/bin/google-chrome-stable'
+        options.binary_location = chrome_path
         options.add_argument("--headless")
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
+        options.add_argument(
+            'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+        )
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_experimental_option("prefs", {
+            "download.default_directory": tmp_dir,
+            "download.prompt_for_download": False,
+            "download.directory_upgrade": True,
+            "safebrowsing.enabled": True
+        })
 
-        driver = webdriver.Chrome(options=options)
+        driver = uc.Chrome(options=options)
         try:
             print("Waiting for site load")
             driver.get("https://translate.google.com/?sl=auto&tl=en&op=docs")
+            sleep(2)
 
             try:
                 print("Waiting for 'Accept all cookies' to appear")
@@ -54,16 +50,19 @@ def translate_pdf(pdf: bytearray):
                 ).click()
             except Exception:
                 pass
+            sleep(2.5)
 
             print("Waiting for file upload area")
             WebDriverWait(driver, 60).until(
                 EC.presence_of_element_located((By.XPATH, '//input[@type="file"]'))
             ).send_keys(tmp_file.name)
+            sleep(3)
 
             print("Waiting for translate button")
             WebDriverWait(driver, 300).until(
                 EC.element_to_be_clickable((By.XPATH, "//button[.//span[contains(text(), 'Translate')]]"))
             ).click()
+            sleep(1)
 
             print("Waiting for Download translation or Got it button")
             element = WebDriverWait(driver, 300).until(check_elements_clickable)
@@ -71,6 +70,7 @@ def translate_pdf(pdf: bytearray):
                 print("Google is telling us to try again later")
                 return b""
             element.click()
+            sleep(2)
 
             max_wait = 300
             start_time = time()
