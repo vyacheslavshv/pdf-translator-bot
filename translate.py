@@ -23,7 +23,7 @@ def translate_pdf(pdf: bytearray):
         options = uc.ChromeOptions()
         chrome_path = '/usr/bin/google-chrome-stable'
         options.binary_location = chrome_path
-        options.add_argument("--headless")
+        # options.add_argument("--headless")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_experimental_option("prefs", {
