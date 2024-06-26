@@ -51,7 +51,7 @@ def convert_to_docx(file_path):
             safe_click(driver, (By.ID, "upload"))
 
             print("Waiting for download button")
-            safe_click(driver, (By.XPATH, '//*[@id="result"]/a'), 180)
+            safe_click(driver, (By.XPATH, '//*[@id="result"]/a'), 300)
 
             downloaded_file = wait_for_file_download(tmp_dir)
             final_file_name = str(uuid.uuid4()) + ".docx"

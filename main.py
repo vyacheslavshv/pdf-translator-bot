@@ -27,8 +27,9 @@ task_queue = asyncio.Queue()
 async def process_file(event):
     file_paths = []
     try:
-        await asyncio.wait_for(process_file_core(event, file_paths), timeout=300)
+        await asyncio.wait_for(process_file_core(event, file_paths), timeout=600)
     except asyncio.TimeoutError:
+        traceback.print_exc()
         await event.respond("Processing timed out. Please try again or use a smaller file.")
     except Exception:
         traceback.print_exc()
