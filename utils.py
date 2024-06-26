@@ -48,7 +48,7 @@ def epub2pdf(epub_path):
 def mobi2pdf(mobi_path):
     output_pdf_path = mobi_path.replace('.mobi', '.pdf')
     command = [
-        'ebook-convert', mobi_path, output_pdf_path, '--no-sandbox',
+        'ebook-convert', mobi_path, output_pdf_path,
         '--pdf-page-numbers', '--paper-size', 'a4',
         '--pdf-default-font-size', '16', '--pdf-mono-font-size', '12'
     ]
