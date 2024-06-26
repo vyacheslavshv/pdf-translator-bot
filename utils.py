@@ -1,7 +1,11 @@
 import os
 import fitz
 import subprocess
+
 from time import time, sleep
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import StaleElementReferenceException
 
 
 def add_watermark_to_pdf(pdf_path, watermark_image):
@@ -70,3 +74,31 @@ def wait_for_file_download(directory, timeout=300):
 
         if time() - start_time > timeout:
             raise TimeoutError("File download did not complete in time")
+
+
+def safe_click(driver, locator):
+    attempts = 0
+    while attempts < 3:
+        try:
+            element = WebDriverWait(driver, 30).until(
+                EC.element_to_be_clickable(locator))
+            driver.execute_script("arguments[0].click();", element)
+            return
+        except StaleElementReferenceException:
+            attempts += 1
+            if attempts == 3:
+                raise
+
+
+def safe_send_keys(driver, locator, keys):
+    attempts = 0
+    while attempts < 3:
+        try:
+            element = WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located(locator))
+            element.send_keys(keys)
+            return
+        except StaleElementReferenceException:
+            attempts += 1
+            if attempts == 3:
+                raise

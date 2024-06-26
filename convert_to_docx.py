@@ -8,9 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-
-from time import sleep
-from utils import kill_chrome_drivers, wait_for_file_download
+from utils import kill_chrome_drivers, wait_for_file_download, safe_click, safe_send_keys
 
 
 def convert_to_docx(file_path):
@@ -41,27 +39,19 @@ def convert_to_docx(file_path):
             driver.get("https://pdfocr.org")
 
             print("Waiting for file upload area")
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.ID, "file"))
-            ).send_keys(tmp_file_path)
+            safe_send_keys(driver, (By.ID, "file"), tmp_file_path)
 
             print("Waiting for lang choice")
+            safe_click(driver, (By.ID, "lang"))
             select_element = WebDriverWait(driver, 30).until(
-                EC.element_to_be_clickable((By.ID, "lang"))
-            )
+                EC.presence_of_element_located((By.ID, "lang")))
             Select(select_element).select_by_visible_text('Arabic')
 
             print("Waiting for upload area")
-            upload_button = WebDriverWait(driver, 30).until(
-                EC.element_to_be_clickable((By.ID, "upload"))
-            )
-            driver.execute_script("arguments[0].click();", upload_button)
+            safe_click(driver, (By.ID, "upload"))
 
             print("Waiting for download button")
-            download_link = WebDriverWait(driver, 300).until(
-                EC.element_to_be_clickable((By.XPATH, '//*[@id="result"]/a'))
-            )
-            driver.execute_script("arguments[0].click();", download_link)
+            safe_click(driver, (By.XPATH, '//*[@id="result"]/a'))
 
             downloaded_file = wait_for_file_download(tmp_dir)
             final_file_name = str(uuid.uuid4()) + ".docx"
