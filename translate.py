@@ -21,7 +21,7 @@ def translate_pdf(pdf: bytearray):
         kill_chrome_drivers()
 
         options = uc.ChromeOptions()
-        # options.add_argument("--headless")
+        options.add_argument("--headless")
         options.add_experimental_option("prefs", {
             "download.default_directory": tmp_dir,
             "download.prompt_for_download": False,
@@ -33,9 +33,10 @@ def translate_pdf(pdf: bytearray):
         try:
             driver.get("https://translate.google.com/?sl=auto&tl=en&op=docs")
 
-            # WebDriverWait(driver, 60).until(
-            #     EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Accept all')]"))
-            # ).click()
+            print("Waiting for 'Accept all cookies' to appear")
+            WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Accept all')]"))
+            ).click()
 
             print("Waiting for file upload area")
             WebDriverWait(driver, 60).until(
