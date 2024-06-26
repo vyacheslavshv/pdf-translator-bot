@@ -29,6 +29,7 @@ async def process_file(event):
     try:
         file_path = await event.download_media()
         file_paths.append(file_path)
+        original_file_name = os.path.splitext(file_path)[0]
 
         if not file_path.endswith(".pdf"):
             await event.respond("Converting your document...")
@@ -46,13 +47,29 @@ async def process_file(event):
                 traceback.print_exc()
                 return
 
+        if os.path.getsize(file_path) > MAX_PDF_SIZE:
+            await event.respond("File is very large. Please try a smaller file.")
+            return
+
         await event.respond("Converting your document to DOCX...")
         docx_path = convert_to_docx(file_path)
         file_paths.append(docx_path)
 
+        if os.path.getsize(docx_path) > MAX_DOCX_SIZE:
+            await event.respond("File is still very large. Please try a smaller file.")
+            return
+
         await event.respond("Translating your document...")
         translated_docx_path = translate_docx(docx_path)
         file_paths.append(translated_docx_path)
+
+        if os.path.getsize(translated_docx_path) > MAX_TRANSLATED_DOCX_SIZE:
+            await event.respond("Unable to convert it to DOCX, sending it as is...")
+            translated_docx_name = f"{original_file_name}_translated.docx"
+            os.rename(translated_docx_path, translated_docx_name)
+            file_paths.append(translated_docx_name)
+            await event.reply(file=translated_docx_name)
+            return
 
         await event.respond("Converting translated document back to PDF...")
         final_pdf_path = convert_to_pdf(translated_docx_path)
@@ -62,8 +79,11 @@ async def process_file(event):
         watermarked_pdf_path = add_watermark_to_pdf(final_pdf_path, "watermark.png")
         file_paths.append(watermarked_pdf_path)
 
+        original_file_path = f"{original_file_name}.pdf"
+        os.rename(watermarked_pdf_path, original_file_path)
+
         await event.respond("Sending translated document...")
-        await event.reply(file=watermarked_pdf_path)
+        await event.reply(file=original_file_path)
 
     except Exception:
         traceback.print_exc()
