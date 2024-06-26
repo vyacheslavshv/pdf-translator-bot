@@ -47,9 +47,9 @@ def convert_to_pdf(file_path):
             downloaded_file = wait_for_file_download(tmp_dir)
             final_file_name = str(uuid.uuid4()) + ".pdf"
             shutil.copy(downloaded_file, final_file_name)
+
+            return final_file_name
         except Exception:
             traceback.print_exc()
         finally:
             driver.quit()
-
-        return final_file_name
