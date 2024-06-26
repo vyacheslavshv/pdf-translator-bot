@@ -95,11 +95,12 @@ async def process_file_core(event, file_paths):
     watermarked_pdf_path = add_watermark_to_pdf(final_pdf_path, "watermark.png")
     file_paths.append(watermarked_pdf_path)
 
-    original_file_path = f"{original_file_name}.pdf"
-    os.rename(watermarked_pdf_path, original_file_path)
+    translated_pdf_name = f"{original_file_name}_translated.pdf"
+    os.rename(watermarked_pdf_path, translated_pdf_name)
+    file_paths.append(translated_pdf_name)
 
     await event.respond("Sending translated document...")
-    await event.reply(file=original_file_path)
+    await event.reply(file=translated_pdf_name)
 
 
 async def worker():
