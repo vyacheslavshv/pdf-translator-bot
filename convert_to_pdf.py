@@ -40,7 +40,7 @@ def convert_to_pdf(file_path):
             element = WebDriverWait(driver, 60).until(
                 EC.presence_of_element_located((By.ID, "file"))
             )
-            sleep(3)
+            sleep(5)
             element.send_keys(tmp_file_path)
 
             element = WebDriverWait(driver, 60).until(
