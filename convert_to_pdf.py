@@ -22,6 +22,11 @@ def convert_to_pdf(file_path):
         kill_chrome_drivers()
 
         options = uc.ChromeOptions()
+        chrome_path = '/usr/bin/google-chrome-stable'
+        options.binary_location = chrome_path
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
         options.add_experimental_option("prefs", {
             "download.default_directory": tmp_dir,
             "download.prompt_for_download": False,

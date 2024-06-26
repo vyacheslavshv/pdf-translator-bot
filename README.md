@@ -25,6 +25,8 @@ Certain functionalities of this bot require system packages:
 
 ```bash
 sudo apt install calibre
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo apt install ./google-chrome-stable_current_amd64.deb
 ```
 
 ### Setup Instructions
