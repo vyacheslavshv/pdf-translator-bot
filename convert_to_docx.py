@@ -11,7 +11,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-from seleniumbase import Driver
 from utils import kill_chrome_drivers, wait_for_file_download, safe_click, safe_send_keys
 
 
@@ -20,33 +19,26 @@ def convert_to_docx(file_path):
         with open(file_path, "rb") as f:
             pdf_array = bytearray(f.read())
         tmp_file.write(pdf_array)
-        tmp_file_path = tmp_file.name
 
         kill_chrome_drivers()
 
         options = uc.ChromeOptions()
-        chrome_path = '/usr/bin/google-chrome-stable'
-        options.binary_location = chrome_path
-        options.add_argument("--headless")
-        options.add_argument(
-            'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+        options.add_argument("--start-maximized")
+        options.add_argument(f"--homedir={tmp_dir}")
+        options.add_argument(f"--disk-cache-dir={tmp_dir}/cache-dir")
+        options.add_argument(f"--data-path={tmp_dir}/data-path")
+        options.add_experimental_option(
+            "prefs", {"download.default_directory": tmp_dir}
         )
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_experimental_option("prefs", {
-            "download.default_directory": tmp_dir,
-            "download.prompt_for_download": False,
-            "download.directory_upgrade": True,
-            "safebrowsing.enabled": True
-        })
 
-        driver = uc.Chrome(options=options)
+        driver = uc.Chrome(options=options, enable_cdp_events=True)
+
         try:
             print("Waiting for site load")
             driver.get("https://pdfocr.org")
 
             print("Waiting for file upload area")
-            safe_send_keys(driver, (By.ID, "file"), tmp_file_path)
+            safe_send_keys(driver, (By.ID, "file"), tmp_file.name)
 
             print("Waiting for lang choice")
             safe_click(driver, (By.ID, "lang"))

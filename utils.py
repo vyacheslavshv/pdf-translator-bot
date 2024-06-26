@@ -1,12 +1,12 @@
 import os
 import fitz
 import subprocess
-import psutil
 
 from time import time, sleep
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import StaleElementReferenceException
+from pyvirtualdisplay import Display
 
 
 def add_watermark_to_pdf(pdf_path, watermark_image):
@@ -34,8 +34,6 @@ def kill_chrome_drivers():
     except subprocess.CalledProcessError:
         pass
 
-    subprocess.run(['chmod', '+x', 'chromedriver'])
-    from pyvirtualdisplay import Display
     display = Display(visible=False, size=(800, 600))
     display.start()
 

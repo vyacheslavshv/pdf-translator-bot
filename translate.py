@@ -3,7 +3,6 @@ import shutil
 import uuid
 import traceback
 import undetected_chromedriver as uc
-import sys
 
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from selenium.webdriver.support.ui import WebDriverWait
@@ -19,16 +18,9 @@ def translate_pdf(pdf: bytearray):
     with NamedTemporaryFile(suffix=".docx") as tmp_file, TemporaryDirectory() as tmp_dir:
         tmp_file.write(pdf)
 
-        error = 0
+        kill_chrome_drivers()
 
-        options: uc.ChromeOptions = uc.ChromeOptions()
-        # options.add_argument("--headless=new")
-        # options.add_argument("--disable-gpu")
-        # options.add_argument("window-size=1366x768")
-        # options.add_argument("--disable-dev-shm-usage")
-        # options.add_argument("--hide-scrollbars")
-        # options.add_argument("--single-process")
-        # options.add_argument("--ignore-certificate-errors")
+        options = uc.ChromeOptions()
         options.add_argument("--start-maximized")
         options.add_argument(f"--homedir={tmp_dir}")
         options.add_argument(f"--disk-cache-dir={tmp_dir}/cache-dir")
@@ -36,10 +28,8 @@ def translate_pdf(pdf: bytearray):
         options.add_experimental_option(
             "prefs", {"download.default_directory": tmp_dir}
         )
-        print("Opening driver")
 
-        if sys.platform.startswith('linux'):
-            driver: uc.Chrome = uc.Chrome(options=options, enable_cdp_events=True)
+        driver = uc.Chrome(options=options, enable_cdp_events=True)
 
         try:
             print("Waiting for site load")
