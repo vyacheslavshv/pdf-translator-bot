@@ -9,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
+from selenium import webdriver
 
 from time import sleep, time
 from utils import kill_chrome_drivers
@@ -20,23 +21,28 @@ def translate_pdf(pdf: bytearray):
 
         kill_chrome_drivers()
 
-        options = uc.ChromeOptions()
-        chrome_path = '/usr/bin/google-chrome-stable'
-        options.binary_location = chrome_path
-        options.add_argument("--headless")
-        options.add_argument(
-            'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
-        )
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_experimental_option("prefs", {
-            "download.default_directory": tmp_dir,
-            "download.prompt_for_download": False,
-            "download.directory_upgrade": True,
-            "safebrowsing.enabled": True
-        })
+        # options = uc.ChromeOptions()
+        # chrome_path = '/usr/bin/google-chrome-stable'
+        # options.binary_location = chrome_path
+        # options.add_argument("--headless")
+        # options.add_argument(
+        #     'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+        # )
+        # options.add_argument("--no-sandbox")
+        # options.add_argument("--disable-dev-shm-usage")
+        # options.add_experimental_option("prefs", {
+        #     "download.default_directory": tmp_dir,
+        #     "download.prompt_for_download": False,
+        #     "download.directory_upgrade": True,
+        #     "safebrowsing.enabled": True
+        # })
 
-        driver = uc.Chrome(options=options)
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless")
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('useAutomationExtension', False)
+
+        driver = webdriver.Chrome(options=options)
         try:
             print("Waiting for site load")
             driver.get("https://translate.google.com/?sl=auto&tl=en&op=docs")
