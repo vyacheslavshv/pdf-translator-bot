@@ -37,23 +37,27 @@ def convert_to_docx(file_path):
 
         driver = uc.Chrome(options=options)
         try:
+            print("Waiting for site load")
             driver.get("https://pdfocr.org")
-            sleep(3)
 
+            print("Waiting for file upload area")
             WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located((By.ID, "file"))
             ).send_keys(tmp_file_path)
 
+            print("Waiting for lang choice")
             select_element = WebDriverWait(driver, 30).until(
                 EC.element_to_be_clickable((By.ID, "lang"))
             )
             Select(select_element).select_by_visible_text('Arabic')
 
+            print("Waiting for upload area")
             upload_button = WebDriverWait(driver, 30).until(
                 EC.element_to_be_clickable((By.ID, "upload"))
             )
             driver.execute_script("arguments[0].click();", upload_button)
 
+            print("Waiting for download button")
             download_link = WebDriverWait(driver, 300).until(
                 EC.element_to_be_clickable((By.XPATH, '//*[@id="result"]/a'))
             )

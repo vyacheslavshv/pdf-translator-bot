@@ -35,6 +35,7 @@ def translate_pdf(pdf: bytearray):
 
         driver = uc.Chrome(options=options)
         try:
+            print("Waiting for site load")
             driver.get("https://translate.google.com/?sl=auto&tl=en&op=docs")
 
             # print("Waiting for 'Accept all cookies' to appear")
@@ -47,6 +48,7 @@ def translate_pdf(pdf: bytearray):
                 EC.presence_of_element_located((By.XPATH, '//input[@type="file"]'))
             ).send_keys(tmp_file.name)
 
+            print("Waiting for translate button")
             WebDriverWait(driver, 300).until(
                 EC.element_to_be_clickable((By.XPATH, "//button[.//span[contains(text(), 'Translate')]]"))
             ).click()
